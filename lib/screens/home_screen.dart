@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hospital_booking/screens/test_listings_screen.dart';
 import 'package:hospital_booking/screens/booking_history_screen.dart';
 import 'package:hospital_booking/screens/video_screen.dart';
+import 'package:hospital_booking/screens/login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -68,178 +69,218 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('MediBook'),
+        elevation: 0,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              // Show confirmation dialog
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Navigate to login screen
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          (route) => false,
+                        );
+                      },
+                      child: const Text('Logout'),
+                    ),
+                  ],
                 ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Hello, Hridaya',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+              );
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              'Hello, Hridaya',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            'How are you feeling today?',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 16,
+                            SizedBox(height: 5),
+                            Text(
+                              'How are you feeling today?',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                              ),
                             ),
+                          ],
+                        ),
+                        const CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.person,
+                            color: Color(0xFF4A55A2),
+                            size: 30,
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                      const CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.person,
-                          color: Color(0xFF4A55A2),
-                          size: 30,
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          hintText: 'Search for tests...',
+                          border: InputBorder.none,
+                          icon: Icon(Icons.search),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search for tests...',
-                        border: InputBorder.none,
-                        icon: Icon(Icons.search),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Quick Actions',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Quick Actions',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildQuickActionCard(
+                          context,
+                          icon: Icons.science,
+                          title: 'Book Test',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const TestListingsScreen()),
+                            );
+                          },
+                        ),
+                        _buildQuickActionCard(
+                          context,
+                          icon: Icons.video_library,
+                          title: 'Watch Video',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const VideoScreen()),
+                            );
+                          },
+                        ),
+                        _buildQuickActionCard(
+                          context,
+                          icon: Icons.history,
+                          title: 'History',
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const BookingHistoryScreen()),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildQuickActionCard(
-                        context,
-                        icon: Icons.science,
-                        title: 'Book Test',
-                        onTap: () {
+                    const SizedBox(height: 25),
+                    const Text(
+                      'Popular Tests',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    _buildPopularTestCard(
+                      context,
+                      title: 'Complete Blood Count (CBC)',
+                      description: 'Measures different components of your blood',
+                      price: '\$45.99',
+                      time: '30 minutes',
+                    ),
+                    const SizedBox(height: 15),
+                    _buildPopularTestCard(
+                      context,
+                      title: 'COVID-19 PCR Test',
+                      description: 'Detects genetic material from the SARS-CoV-2 virus',
+                      price: '\$120.00',
+                      time: '24-48 hours',
+                    ),
+                    const SizedBox(height: 15),
+                    _buildPopularTestCard(
+                      context,
+                      title: 'Lipid Panel',
+                      description: 'Measures cholesterol levels and triglycerides',
+                      price: '\$65.75',
+                      time: '45 minutes',
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => const TestListingsScreen()),
                           );
                         },
+                        child: const Text('View All Tests'),
                       ),
-                      _buildQuickActionCard(
-                        context,
-                        icon: Icons.video_library,
-                        title: 'Watch Video',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const VideoScreen()),
-                          );
-                        },
-                      ),
-                      _buildQuickActionCard(
-                        context,
-                        icon: Icons.history,
-                        title: 'History',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const BookingHistoryScreen()),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 25),
-                  const Text(
-                    'Popular Tests',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  const SizedBox(height: 15),
-                  _buildPopularTestCard(
-                    context,
-                    title: 'Complete Blood Count (CBC)',
-                    description: 'Measures different components of your blood',
-                    price: '\₹ 3,817',
-                    time: '30 minutes',
-                  ),
-                  const SizedBox(height: 15),
-                  _buildPopularTestCard(
-                    context,
-                    title: 'COVID-19 PCR Test',
-                    description: 'Detects genetic material from the SARS-CoV-2 virus',
-                    price: '\₹ 4,817',
-                    time: '24-48 hours',
-                  ),
-                  const SizedBox(height: 15),
-                  _buildPopularTestCard(
-                    context,
-                    title: 'Lipid Panel',
-                    description: 'Measures cholesterol levels and triglycerides',
-                    price: '\₹ 10,417',
-                    time: '45 minutes',
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const TestListingsScreen()),
-                        );
-                      },
-                      child: const Text('View All Tests'),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

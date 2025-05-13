@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class VideoScreen extends StatefulWidget {
   const VideoScreen({Key? key}) : super(key: key);
@@ -9,20 +9,41 @@ class VideoScreen extends StatefulWidget {
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  late VideoPlayerController _controller;
-  bool _isInitialized = false;
+  late YoutubePlayerController _controller;
+  bool _isPlayerReady = false;
 
   @override
   void initState() {
     super.initState();
-    // Using a sample video URL - replace with your actual video
-    _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    )..initialize().then((_) {
-        setState(() {
-          _isInitialized = true;
-        });
-      });
+    
+    // Extract video ID from the YouTube URL
+    final videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=yXPlM7yMjYI");
+    
+    _controller = YoutubePlayerController(
+      initialVideoId: videoId!,
+      flags: const YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+        disableDragSeek: false,
+        loop: false,
+        isLive: false,
+        forceHD: false,
+        enableCaption: true,
+      ),
+    )..addListener(_listener);
+  }
+
+  void _listener() {
+    if (_isPlayerReady && mounted && !_controller.value.isFullScreen) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void deactivate() {
+    // Pause the video when navigating away
+    _controller.pause();
+    super.deactivate();
   }
 
   @override
@@ -42,82 +63,28 @@ class _VideoScreenState extends State<VideoScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 250,
-              width: double.infinity,
-              color: Colors.black,
-              child: _isInitialized
-                  ? Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        AspectRatio(
-                          aspectRatio: _controller.value.aspectRatio,
-                          child: VideoPlayer(_controller),
-                        ),
-                        if (!_controller.value.isPlaying)
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.7),
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.play_arrow,
-                                size: 40,
-                                color: Color(0xFF4A55A2),
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _controller.play();
-                                });
-                              },
-                            ),
-                          ),
-                      ],
-                    )
-                  : const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-            ),
-            if (_isInitialized)
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _controller.value.isPlaying
-                              ? _controller.pause()
-                              : _controller.play();
-                        });
-                      },
-                    ),
-                    Expanded(
-                      child: VideoProgressIndicator(
-                        _controller,
-                        allowScrubbing: true,
-                        colors: VideoProgressColors(
-                          playedColor: Theme.of(context).primaryColor,
-                          bufferedColor: Colors.grey.shade300,
-                          backgroundColor: Colors.grey.shade100,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      _formatDuration(_controller.value.position) +
-                          ' / ' +
-                          _formatDuration(_controller.value.duration),
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ],
+            YoutubePlayerBuilder(
+              player: YoutubePlayer(
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                progressIndicatorColor: Theme.of(context).primaryColor,
+                progressColors: ProgressBarColors(
+                  playedColor: Theme.of(context).primaryColor,
+                  handleColor: Theme.of(context).colorScheme.secondary,
                 ),
+                onReady: () {
+                  _isPlayerReady = true;
+                },
               ),
+              builder: (context, player) {
+                return Column(
+                  children: [
+                    // Player will take up the space it needs
+                    player,
+                  ],
+                );
+              },
+            ),
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -349,12 +316,5 @@ class _VideoScreenState extends State<VideoScreen> {
         ),
       ],
     );
-  }
-
-  String _formatDuration(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return '$minutes:$seconds';
   }
 }
