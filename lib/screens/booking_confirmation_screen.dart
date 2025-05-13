@@ -144,7 +144,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                               ),
                               SizedBox(width: 10),
                               Text(
-                                'Name: John Doe',
+                                'Name: Hridaya Patil',
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),
@@ -178,7 +178,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                               ),
                               const SizedBox(width: 10),
                               const Text(
-                                'Email: john.doe@example.com',
+                                'Email: hridaya@gmail.com',
                                 style: TextStyle(
                                   fontSize: 16,
                                 ),
@@ -199,7 +199,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text('Test Fee'),
-                              Text('\$${test.price.toStringAsFixed(2)}'),
+                              Text('\₹${test.price.toStringAsFixed(2)}'),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -207,7 +207,7 @@ class BookingConfirmationScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Service Fee'),
-                              Text('\$10.00'),
+                              Text('\₹1,000'),
                             ],
                           ),
                           const SizedBox(height: 10),

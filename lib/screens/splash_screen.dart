@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hospital_booking/screens/login_screen.dart';
+import 'package:lottie/lottie.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -62,8 +63,13 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 50),
-            const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            SizedBox(
+              height: 250,
+              width: 250,
+              child: Lottie.asset(
+                'assets/loading.json',
+                fit: BoxFit.cover,
+              ),
             ),
           ],
         ),

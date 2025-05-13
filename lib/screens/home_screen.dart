@@ -92,7 +92,7 @@ class HomeContent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
                           Text(
-                            'Hello, John',
+                            'Hello, Hridaya',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 24,
@@ -203,7 +203,7 @@ class HomeContent extends StatelessWidget {
                     context,
                     title: 'Complete Blood Count (CBC)',
                     description: 'Measures different components of your blood',
-                    price: '\$45.99',
+                    price: '\₹ 3,817',
                     time: '30 minutes',
                   ),
                   const SizedBox(height: 15),
@@ -211,7 +211,7 @@ class HomeContent extends StatelessWidget {
                     context,
                     title: 'COVID-19 PCR Test',
                     description: 'Detects genetic material from the SARS-CoV-2 virus',
-                    price: '\$120.00',
+                    price: '\₹ 4,817',
                     time: '24-48 hours',
                   ),
                   const SizedBox(height: 15),
@@ -219,7 +219,7 @@ class HomeContent extends StatelessWidget {
                     context,
                     title: 'Lipid Panel',
                     description: 'Measures cholesterol levels and triglycerides',
-                    price: '\$65.75',
+                    price: '\₹ 10,417',
                     time: '45 minutes',
                   ),
                   const SizedBox(height: 20),
